@@ -1,3 +1,5 @@
+ // Initial Values
+
 $(document).ready(function () {
 
     // Initialize Firebase
@@ -19,39 +21,43 @@ $(document).ready(function () {
     var startDate = "";
     var monthlyRate = 0;
 
-    // Capture Button Click
-    $("#submit-btn").on("click", function (event) {
-        event.preventDefault();
+  // Capture Button Click
+  $("#add-employee").on("click", function(event) {
+    event.preventDefault();
 
-        // Grabbed values from text-boxes
-        employeeName = $("#employee-name").val().trim();
-        employeeRole = $("#employee-role").val().trim();
-        startDate = $("#start-date").val().trim();
-        monthlyRate = $("#monthly-rate").val().trim();
+    // Grabbed values from text-boxes
+    employeeName = $("#employee-name-input").val().trim();
+    employeeRole = $("#employee-role-input").val().trim();
+    startDate = $("#start-date-input").val().trim();
+    monthlyRate = $("#monthly-rate-input").val().trim();
 
-        // Code for "Setting values in the database"
-        database.ref().push({
-            employeeName: employeeName,
-            employeeRole: employeeRole,
-            startDate: startDate,
-            monthlyRate: monthlyRate
-        });
-
+    // Code for "Setting values in the database"
+    database.ref().push({
+      employeeName: employeeName,
+      employeeRole: employeeRole,
+      startDate: startDate,
+      monthlyRate: monthlyRate,
+      dateAdded: firebase.database.ServerValue.TIMESTAMP
     });
 
-    // Firebase watcher + initial loader HINT: .on("value")
-    database.ref().on("child_added", function (snapshot) {
+  });
 
-        // Log everything that's coming out of snapshot
-        console.log(snapshot.val());
+// Firebase watcher + initial loader HINT: .on("child_added")
+database.ref().on("child_added", function(snapshot) {
 
-        // Change the HTML to reflect
-        $("#name-display").text(snapshot.val().name);
+    // Log everything that's coming out of snapshot
+    console.log(snapshot.val());
 
-        // Handle the errors
-    }, function (errorObject) {
-        console.log("Errors handled: " + errorObject.code);
-    });
+    // Change the HTML to reflect
+    $("#employee-name-display").text(snapshot.val().employeeName);
+    $("#employee-role-display").text(snapshot.val().employeeRole);
+    $("#start-date-display").text(snapshot.val().startDate);
+    $("#monthly-rate-display").text(snapshot.val().monthlyRate);
+    $("#months-worked").text(snapshot.val().monthsWorked);
+    $("#total-billed").text(snapshot.val().totalBilled);
 
-
+    // Handle the errors
+  }, function(errorObject) {
+    console.log("Errors handled: " + errorObject.code);
+  });
 });
