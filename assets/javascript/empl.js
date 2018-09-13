@@ -1,61 +1,57 @@
-// Initialize Firebase
-var config = {
-    apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
-    authDomain: "employeedata13.firebaseapp.com",
-    databaseURL: "https://employeedata13.firebaseio.com",
-    projectId: "employeedata13",
-    storageBucket: "employeedata13.appspot.com",
-    messagingSenderId: "666050386861"
-  };
-  firebase.initializeApp(config);
+$(document).ready(function () {
 
-
-
-var database = firebase.database();
-
-// 2. Populate Firebase Database with initial data (in this case, I did this via Firebase GUI)
-// 3. Button for adding trains
-$("#train-btn").on("click", function (event) {
-    event.preventDefault();
-    // Grabs user input
-    var name = $("#name").val().trim();
-    var destination = $("#destination").val().trim();
-    var time = $("#time").val().trim();
-    var frequency = $("#frequency").val().trim();
-    // Log to check
-
-    console.log(name);
-    console.log(destination);
-    console.log(time);
-    console.log(frequency);
-
-    // Creates local "temporary" object for holding train data
-    var arriveTrain = {
-
-        name: name,
-        destination: destination,
-        time: time,
-        frequency: frequency
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
+        authDomain: "fir-recent-user.firebaseapp.com",
+        databaseURL: "https://fir-recent-user.firebaseio.com",
+        storageBucket: "fir-recent-user.appspot.com"
     };
 
-    // Uploads train data to the database
-    database.ref().push(arriveTrain);
+    firebase.initializeApp(config);
 
-    // Logs everything to console
-    console.log(arriveTrain.name);
-    console.log(arriveTrain.destination);
-    console.log(arriveTrain.time);
-    console.log(arriveTrain.frequency);
+    // Create a variable to reference the database.
+    var database = firebase.database();
 
-    // Alert
-    alert("It Works bazinga!!");
+    // Initial Values
+    var employeeName = "";
+    var employeeRole = "";
+    var startDate = "";
+    var monthlyRate = 0;
 
-    // Clears all of the text-boxes
-    $("#name").val("");
-    $("#destination").val("");
-    $("#time").val("");
-    $("#frequency").val("");
+    // Capture Button Click
+    $("#submit-btn").on("click", function (event) {
+        event.preventDefault();
 
-    // Determine when the next train arrives.
-    return false;
+        // Grabbed values from text-boxes
+        employeeName = $("#employee-name").val().trim();
+        employeeRole = $("#employee-role").val().trim();
+        startDate = $("#start-date").val().trim();
+        monthlyRate = $("#monthly-rate").val().trim();
+
+        // Code for "Setting values in the database"
+        database.ref().push({
+            employeeName: employeeName,
+            employeeRole: employeeRole,
+            startDate: startDate,
+            monthlyRate: monthlyRate
+        });
+
+    });
+
+    // Firebase watcher + initial loader HINT: .on("value")
+    database.ref().on("child_added", function (snapshot) {
+
+        // Log everything that's coming out of snapshot
+        console.log(snapshot.val());
+
+        // Change the HTML to reflect
+        $("#name-display").text(snapshot.val().name);
+
+        // Handle the errors
+    }, function (errorObject) {
+        console.log("Errors handled: " + errorObject.code);
+    });
+
+
 });
