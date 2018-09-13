@@ -1,17 +1,21 @@
-// Initialize Firebase
-var config = {
-    apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
-    authDomain: "fir-recent-user.firebaseapp.com",
-    databaseURL: "https://fir-recent-user.firebaseio.com",
-    storageBucket: "fir-recent-user.appspot.com"
-  };
+ // Initial Values
 
-  firebase.initializeApp(config);
+$(document).ready(function () {
 
-  // Create a variable to reference the database.
-  var database = firebase.database();
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
+        authDomain: "fir-recent-user.firebaseapp.com",
+        databaseURL: "https://fir-recent-user.firebaseio.com",
+        storageBucket: "fir-recent-user.appspot.com"
+    };
 
-  // Initial Values
+    firebase.initializeApp(config);
+
+    // Create a variable to reference the database.
+    var database = firebase.database();
+
+    // Initial Values
     var employeeName = "";
     var employeeRole = "";
     var startDate = "";
@@ -56,5 +60,4 @@ database.ref().on("child_added", function(snapshot) {
   }, function(errorObject) {
     console.log("Errors handled: " + errorObject.code);
   });
-
-  
+});
