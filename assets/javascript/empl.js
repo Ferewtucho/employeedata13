@@ -4,14 +4,14 @@ $(document).ready(function () {
 
     // Initialize Firebase
     var config = {
-        apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
-        authDomain: "fir-recent-user.firebaseapp.com",
-        databaseURL: "https://fir-recent-user.firebaseio.com",
-        storageBucket: "fir-recent-user.appspot.com"
+      apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
+      authDomain: "employeedata13.firebaseapp.com",
+      databaseURL: "https://employeedata13.firebaseio.com",
+      projectId: "employeedata13",
+      storageBucket: "employeedata13.appspot.com",
+      messagingSenderId: "666050386861"
     };
-
     firebase.initializeApp(config);
-
     // Create a variable to reference the database.
     var database = firebase.database();
 
