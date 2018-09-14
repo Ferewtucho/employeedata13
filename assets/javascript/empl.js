@@ -1,28 +1,28 @@
- // Initial Values
+// Initial Values
 
 $(document).ready(function () {
 
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
-      authDomain: "employeedata13.firebaseapp.com",
-      databaseURL: "https://employeedata13.firebaseio.com",
-      projectId: "employeedata13",
-      storageBucket: "employeedata13.appspot.com",
-      messagingSenderId: "666050386861"
-    };
-    firebase.initializeApp(config);
-    // Create a variable to reference the database.
-    var database = firebase.database();
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDUrWsCGleElofc5fErTiYgS6GlGGVF0HY",
+    authDomain: "employeedata13.firebaseapp.com",
+    databaseURL: "https://employeedata13.firebaseio.com",
+    projectId: "employeedata13",
+    storageBucket: "employeedata13.appspot.com",
+    messagingSenderId: "666050386861"
+  };
+  firebase.initializeApp(config);
+  // Create a variable to reference the database.
+  var database = firebase.database();
 
-    // Initial Values
-    var employeeName = "";
-    var employeeRole = "";
-    var startDate = "";
-    var monthlyRate = 0;
+  // Initial Values
+  var employeeName = "";
+  var employeeRole = "";
+  var startDate = "";
+  var monthlyRate = 0;
 
   // Capture Button Click
-  $("#add-employee").on("click", function(event) {
+  $("#add-employee").on("click", function (event) {
     event.preventDefault();
 
     // Grabbed values from text-boxes
@@ -31,33 +31,78 @@ $(document).ready(function () {
     startDate = $("#start-date-input").val().trim();
     monthlyRate = $("#monthly-rate-input").val().trim();
 
-    // Code for "Setting values in the database"
-    database.ref().push({
-      employeeName: employeeName,
-      employeeRole: employeeRole,
-      startDate: startDate,
-      monthlyRate: monthlyRate,
-      dateAdded: firebase.database.ServerValue.TIMESTAMP
-    });
+    // Create local "temporary" objects for holding employee data
+    var newEmp = {
+      name: employeeName,
+      role: employeeRole,
+      start: startDate,
+      rate: monthlyRate,
+    }
+
+    // uploads employee data to the database
+    database.ref().push(newEmp);
+
+    //logs everything to console 
+    console.log(newEmp.employeeName);
+    console.log(newEmp.employeeRole);
+    console.log(newEmp.startDate);
+    console.log(newEmp.monthlyRate);
+
+    alert("successfully added");
+
+    //clear all of the text-boxes;
+
+    $("#employee-name-input").val("");
+    $("#employee-role-input").val("");
+    $("#start-date-input").val("");
+    $("#monthly-rate-input").val("");
 
   });
 
-// Firebase watcher + initial loader HINT: .on("child_added")
-database.ref().on("child_added", function(snapshot) {
+  // Firebase watcher + initial loader HINT: .on("child_added")
+  database.ref().on("child_added", function (childSnapshot) {
 
     // Log everything that's coming out of snapshot
-    console.log(snapshot.val());
+    console.log(childSnapshot.val());
 
-    // Change the HTML to reflect
-    $("#employee-name-display").text(snapshot.val().employeeName);
-    $("#employee-role-display").text(snapshot.val().employeeRole);
-    $("#start-date-display").text(snapshot.val().startDate);
-    $("#monthly-rate-display").text(snapshot.val().monthlyRate);
-    $("#months-worked").text(snapshot.val().monthsWorked);
-    $("#total-billed").text(snapshot.val().totalBilled);
+    // Store everything into a variable.
+    var employeename = childSnapshot.val().name;
+    var employeerole = childSnapshot.val().role;
+    var employeestart = childSnapshot.val().start;
+    var employeerate = childSnapshot.val().rate;
 
-    // Handle the errors
-  }, function(errorObject) {
-    console.log("Errors handled: " + errorObject.code);
+    // Employee Info
+    console.log(employeename);
+    console.log(employeerole);
+    console.log(employeestart);
+    console.log(employeerate);
+
+    //Prettify the employee start
+
+    var empStartPretty = moment.unix(employeestart).format("MM/DD/YYYY");
+
+    //Calculate the months worked using hardcore math
+
+    var empMonths = moment().diff(moment(employeestart, "X"), "months");
+    console.log(empMonths);
+
+    // Calculate the total billed rate
+
+    var empBilled = empMonths * employeerate;
+    console.log(empBilled);
+
+    var newRow = $("<tr>").append(
+      $("<td>").text(employeeName),
+      $("<td>").text(employeerole),
+      $("<td>").text(empStartPretty),
+      $("<td>").text(empMonths),
+      $("<td>").text(employeerate),
+      $("<td>").text(empBilled)
+    );
+    //Append the new role to the table
+    $("#employee-display").append(newRow);
+
   });
+  
+
 });
